@@ -9,7 +9,7 @@ namespace Examples
 {
 	public class Example : IDisposable
 	{
-		private readonly GraphicsWindow _window;
+		private readonly StickyWindow _window;
 
 		private readonly Dictionary<string, SolidBrush> _brushes;
 		private readonly Dictionary<string, Font> _fonts;
@@ -35,11 +35,11 @@ namespace Examples
 				TextAntiAliasing = true
 			};
 
-			_window = new GraphicsWindow(0, 0, 800, 600, gfx)
+			IntPtr ip = System.Diagnostics.Process.GetProcessesByName("WoWClassic")[0].MainWindowHandle;
+			_window = new StickyWindow(ip,gfx)
 			{
-				FPS = 60,
-				IsTopmost = true,
-				IsVisible = true
+                AttachToClientArea = true,
+				BypassTopmost = true,
 			};
 
 			_window.DestroyGraphics += _window_DestroyGraphics;
@@ -62,8 +62,9 @@ namespace Examples
 			_brushes["red"] = gfx.CreateSolidBrush(255, 0, 0);
 			_brushes["green"] = gfx.CreateSolidBrush(0, 255, 0);
 			_brushes["blue"] = gfx.CreateSolidBrush(0, 0, 255);
-			_brushes["background"] = gfx.CreateSolidBrush(0x33, 0x36, 0x3F);
-			_brushes["grid"] = gfx.CreateSolidBrush(255, 255, 255, 0.2f);
+            //_brushes["background"] = gfx.CreateSolidBrush(0xff, 0xff, 0xff);
+            _brushes["background"] = gfx.CreateSolidBrush(0, 0x27, 0x31, 255.0f * 0.2f);
+            _brushes["grid"] = gfx.CreateSolidBrush(255, 255, 255, 0.2f);
 			_brushes["random"] = gfx.CreateSolidBrush(0, 0, 0);
 
 			if (e.RecreateResources) return;
@@ -71,7 +72,7 @@ namespace Examples
 			_fonts["arial"] = gfx.CreateFont("Arial", 12);
 			_fonts["consolas"] = gfx.CreateFont("Consolas", 14);
 
-			_gridBounds = new Rectangle(20, 60, gfx.Width - 20, gfx.Height - 20);
+			_gridBounds = new Rectangle(100, 200, gfx.Width - 20, gfx.Height - 20);
 			_gridGeometry = gfx.CreateGeometry();
 
 			for (float x = _gridBounds.Left; x <= _gridBounds.Right; x += 20)

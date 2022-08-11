@@ -32,19 +32,13 @@ namespace Tests
 				VSync = false,
 				WindowHandle = IntPtr.Zero
 			};
-
-			_window = new GraphicsWindow(_graphics)
-			{
-				IsTopmost = true,
-				IsVisible = true,
-				FPS = 60,
-				X = 0,
-				Y = 0,
-				Width = 1280,
-				Height = 720
+			IntPtr ip = System.Diagnostics.Process.GetProcessesByName("WoWClassic")[0].MainWindowHandle;
+			_window = new StickyWindow(ip, _graphics)
+            {
+                AttachToClientArea = true,
+				BypassTopmost = true,
 			};
-
-			_window.SetupGraphics += _window_SetupGraphics;
+            _window.SetupGraphics += _window_SetupGraphics;
 			_window.DestroyGraphics += _window_DestroyGraphics;
 			_window.DrawGraphics += _window_DrawGraphics;
 		}
