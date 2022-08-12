@@ -14,7 +14,6 @@
     <Copyright>Copyright (c) 2019 michel-pi</Copyright>
     <PackageProjectUrl>https://github.com/michel-pi/GameOverlay.Net</PackageProjectUrl>
     <RepositoryUrl>https://github.com/michel-pi/GameOverlay.Net</RepositoryUrl>
-    <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
