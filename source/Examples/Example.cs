@@ -21,8 +21,8 @@ namespace Examples
 		private Random _random;
 		private long _lastRandomSet;
 		private List<Action<Graphics, float, float>> _randomFigures;
-
-		public Example()
+        private float angle = 0f;
+        public Example()
 		{
 			_brushes = new Dictionary<string, SolidBrush>();
 			_fonts = new Dictionary<string, Font>();
@@ -35,7 +35,7 @@ namespace Examples
 				TextAntiAliasing = true
 			};
 
-			IntPtr ip = System.Diagnostics.Process.GetProcessesByName("WoWClassic")[0].MainWindowHandle;
+			IntPtr ip = System.Diagnostics.Process.GetProcessesByName("WoWClassicT")[0].MainWindowHandle;
 			_window = new StickyWindow(ip,gfx)
 			{
                 AttachToClientArea = true,
@@ -147,13 +147,81 @@ namespace Examples
 					DrawRandomFigure(gfx, column, row);
 				}
 			}
-		}
 
-		private void DrawRandomFigure(Graphics gfx, float x, float y)
+
+			//test draw
+			if (angle < 2 * 3.14)
+			{
+				angle += 0.01f;
+			}
+			else
+			{
+				angle = 0;
+            }
+			
+			float x1 = 100, y1 = 100;
+            float x2 = 80, y2 = 140;
+            float x3 = 120, y3 = 140;
+
+
+            //rotate calculation
+            //https://stackoverflow.com/questions/61447973/how-to-calculate-positions-of-new-points-after-image-rotation
+            //def rotate(pt, radians, origin):
+            //    x, y = pt
+            //    offset_x, offset_y = origin
+            //adjusted_x = (x - offset_x)
+            //adjusted_y = (y - offset_y)
+            //cos_rad = math.cos(radians)
+            //sin_rad = math.sin(radians)
+            //qx = offset_x + cos_rad* adjusted_x + sin_rad* adjusted_y
+            //qy = offset_y + -sin_rad* adjusted_x + cos_rad* adjusted_y
+            //return qx, qy
+
+            float x2r = (float)((x2 - x1) * Math.Cos(angle) + (y2 - y1) * Math.Sin(angle) + x1);
+            float y2r = (float)(- (x2 - x1) * Math.Sin(angle) + (y2 - y1) * Math.Cos(angle) + y1);
+
+            float x3r = (float)((x3 - x1) * Math.Cos(angle) + (y3 - y1) * Math.Sin(angle) + x1);
+            float y3r = (float)(- (x3 - x1) * Math.Sin(angle) + (y3 - y1) * Math.Cos(angle) + y1);
+            //b.x = (a.x - o.x) * cos(angle) - (a.y - o.y) * sin(angle) + o.x
+            //b.y = (a.x - o.x) * sin(angle) + (a.y - o.y) * cos(angle) + o.y
+
+            //
+			gfx.DrawText(_fonts["arial"], 22, _brushes["white"], x1, y1, $"angle: {angle}");
+            //vertice
+            gfx.DrawCircle(GetRandomColor(), x1, y1, 10, 2.0f);
+			//original
+            //gfx.DrawTriangle(_brushes["red"], x1, y1, x2, y2, x3, y3, 1.0f);
+			//rotated
+            gfx.DrawTriangle(_brushes["green"], x1, y1, x2r, y2r, x3r, y3r, 1.0f);
+            gfx.DrawText(_fonts["arial"], 22, _brushes["white"], x2r, y2r, "p2");
+            gfx.DrawText(_fonts["arial"], 22, _brushes["white"], x3r, y3r, "p3");
+
+            ////test transform
+            //TransformationMatrix tm = new TransformationMatrix();
+            //         TransformationMatrix.Rotation(1.2f);
+
+            //         gfx.TransformStart(tm);
+            ////gfx.TransformEnd();
+        }
+        //def rotate(pt, radians, origin):
+    //    x, y = pt
+    //    offset_x, offset_y = origin
+    //adjusted_x = (x - offset_x)
+    //adjusted_y = (y - offset_y)
+    //cos_rad = math.cos(radians)
+    //sin_rad = math.sin(radians)
+    //qx = offset_x + cos_rad* adjusted_x + sin_rad* adjusted_y
+    //qy = offset_y + -sin_rad* adjusted_x + cos_rad* adjusted_y
+    //return qx, qy
+
+
+        private void DrawRandomFigure(Graphics gfx, float x, float y)
 		{
 			var action = _randomFigures[_random.Next(0, _randomFigures.Count)];
 
 			action(gfx, x, y);
+
+
 		}
 
 		private SolidBrush GetRandomColor()
